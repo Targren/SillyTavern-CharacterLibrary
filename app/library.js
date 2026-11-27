@@ -17620,23 +17620,22 @@ function addAltGreetingField(container, value = '', index = null) {
     const fieldId = `editAltGreeting_${idx}`;
     
     const wrapper = document.createElement('div');
-    wrapper.className = 'alt-greeting-item expandable-field';
-    wrapper.style.cssText = 'position: relative; margin-bottom: 10px;';
+    wrapper.className = 'alt-greeting-item';
     
-    // Expand button visibility follows lock state (same as other expand-field-btn).
+    // Expand/delete stacked vertically to the right of the textarea (not overlaid).
     const locked = isEditLocked;
     wrapper.innerHTML = `
-        <div style="display: flex; align-items: flex-start; gap: 8px;">
-            <span class="alt-greeting-num" style="color: var(--accent); font-weight: bold; padding-top: 8px;">#${idx + 1}</span>
-            <div style="flex: 1; position: relative;">
-                <button type="button" class="expand-field-btn${locked ? ' hidden' : ''}" data-field="${fieldId}" data-label="Alternate Greeting #${idx + 1}" title="Expand editor">
+        <div class="alt-greeting-row">
+            <span class="alt-greeting-num">#${idx + 1}</span>
+            <textarea id="${fieldId}" class="glass-input alt-greeting-input" rows="3" placeholder="Alternate greeting message..."></textarea>
+            <div class="alt-greeting-actions">
+                <button type="button" class="expand-field-btn alt-greeting-expand-btn${locked ? ' hidden' : ''}" data-field="${fieldId}" data-label="Alternate Greeting #${idx + 1}" title="Expand editor">
                     <i class="fa-solid fa-expand"></i>
                 </button>
-                <textarea id="${fieldId}" class="glass-input alt-greeting-input" rows="3" placeholder="Alternate greeting message..."></textarea>
+                <button type="button" class="remove-alt-greeting-btn${locked ? ' hidden' : ''}" title="Remove this greeting">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
             </div>
-            <button type="button" class="remove-alt-greeting-btn${locked ? ' hidden' : ''}" title="Remove this greeting">
-                <i class="fa-solid fa-trash"></i>
-            </button>
         </div>
     `;
     

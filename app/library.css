@@ -2029,16 +2029,56 @@ body.char-modal-above .cl-modal.visible {
     animation: fadeIn 0.2s ease;
 }
 
+.alt-greeting-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.alt-greeting-num {
+    color: var(--accent);
+    font-weight: bold;
+    padding-top: 8px;
+    flex-shrink: 0;
+}
+
+.alt-greeting-row .alt-greeting-input {
+    flex: 1;
+    min-width: 0;
+}
+
+.alt-greeting-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+/* Override the absolute expand-field-btn placement used in form-group.expandable-field */
+.alt-greeting-actions .expand-field-btn {
+    position: static !important;
+    top: auto !important;
+    right: auto !important;
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+}
+
 .remove-alt-greeting-btn {
     background: rgba(255, 100, 100, 0.2);
     border: 1px solid rgba(255, 100, 100, 0.3);
     color: #f88;
-    padding: 6px 8px;
+    padding: 0;
+    width: 28px;
+    height: 28px;
     border-radius: var(--radius-md);
     font-size: var(--font-sm);
     cursor: pointer;
     transition: all 0.15s ease;
     flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .remove-alt-greeting-btn:hover {
