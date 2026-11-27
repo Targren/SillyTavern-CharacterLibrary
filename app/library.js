@@ -15688,9 +15688,12 @@ function openExpandedFieldEditor(fieldId, fieldLabel) {
         'editSystemPrompt': 'fa-solid fa-terminal',
         'editPostHistoryInstructions': 'fa-solid fa-clock-rotate-left',
         'editCreatorNotes': 'fa-solid fa-feather-pointed',
-        'editMesExample': 'fa-solid fa-quote-left'
+        'editMesExample': 'fa-solid fa-quote-left',
+        'editFirstMes': 'fa-solid fa-message',
     };
-    const fieldIcon = fieldIcons[fieldId] || 'fa-solid fa-expand';
+    // Alternate greetings: editAltGreeting_N
+    const fieldIcon = fieldIcons[fieldId]
+        || (fieldId.startsWith('editAltGreeting_') ? 'fa-solid fa-comments' : 'fa-solid fa-expand');
     
     // Preview toggle button only for Creator's Notes
     const previewToggleHtml = isCreatorNotes ? `
@@ -17614,16 +17617,24 @@ function addAltGreetingField(container, value = '', index = null) {
     if (!container) return;
     
     const idx = index !== null ? index : container.children.length;
+    const fieldId = `editAltGreeting_${idx}`;
     
     const wrapper = document.createElement('div');
-    wrapper.className = 'alt-greeting-item';
+    wrapper.className = 'alt-greeting-item expandable-field';
     wrapper.style.cssText = 'position: relative; margin-bottom: 10px;';
     
+    // Expand button visibility follows lock state (same as other expand-field-btn).
+    const locked = isEditLocked;
     wrapper.innerHTML = `
         <div style="display: flex; align-items: flex-start; gap: 8px;">
-            <span style="color: var(--accent); font-weight: bold; padding-top: 8px;">#${idx + 1}</span>
-            <textarea class="glass-input alt-greeting-input" rows="3" placeholder="Alternate greeting message..." style="flex: 1;"></textarea>
-            <button type="button" class="remove-alt-greeting-btn" title="Remove this greeting">
+            <span class="alt-greeting-num" style="color: var(--accent); font-weight: bold; padding-top: 8px;">#${idx + 1}</span>
+            <div style="flex: 1; position: relative;">
+                <button type="button" class="expand-field-btn${locked ? ' hidden' : ''}" data-field="${fieldId}" data-label="Alternate Greeting #${idx + 1}" title="Expand editor">
+                    <i class="fa-solid fa-expand"></i>
+                </button>
+                <textarea id="${fieldId}" class="glass-input alt-greeting-input" rows="3" placeholder="Alternate greeting message..."></textarea>
+            </div>
+            <button type="button" class="remove-alt-greeting-btn${locked ? ' hidden' : ''}" title="Remove this greeting">
                 <i class="fa-solid fa-trash"></i>
             </button>
         </div>
@@ -17637,6 +17648,14 @@ function addAltGreetingField(container, value = '', index = null) {
         textarea.value = value;
     }
     
+    // Expand button → single-greeting popout
+    const expandBtn = wrapper.querySelector('.expand-field-btn');
+    expandBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        openExpandedFieldEditor(expandBtn.dataset.field, expandBtn.dataset.label);
+    });
+
     // Add remove button handler
     const removeBtn = wrapper.querySelector('.remove-alt-greeting-btn');
     removeBtn.addEventListener('click', () => {
@@ -17651,9 +17670,17 @@ function renumberAltGreetings() {
     
     const items = container.querySelectorAll('.alt-greeting-item');
     items.forEach((item, idx) => {
-        const numSpan = item.querySelector('span');
-        if (numSpan) {
-            numSpan.textContent = `#${idx + 1}`;
+        const fieldId = `editAltGreeting_${idx}`;
+        const numSpan = item.querySelector('.alt-greeting-num');
+        if (numSpan) numSpan.textContent = `#${idx + 1}`;
+
+        const textarea = item.querySelector('.alt-greeting-input');
+        if (textarea) textarea.id = fieldId;
+
+        const expandBtn = item.querySelector('.expand-field-btn');
+        if (expandBtn) {
+            expandBtn.dataset.field = fieldId;
+            expandBtn.dataset.label = `Alternate Greeting #${idx + 1}`;
         }
     });
 }
